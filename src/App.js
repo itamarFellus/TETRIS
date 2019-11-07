@@ -39,19 +39,6 @@ export default class App extends React.Component {
     this.setState({ table, isMissingShape: false })
   }
 
-  renderRows() {
-    return (
-      <div>
-        {this.state.table.map((row, counter) => {
-          return (<div className="row" key={counter}>{row.map((cell, index) => {
-            return (<div className="empty" key={index}>{cell}</div>)
-          })}</div>)
-        })
-        }
-      </div>
-    )
-  }
-
   handleKeyPress(key) {
     if (key.keyCode === 37) {
       this.moveShapeLeft();
@@ -68,7 +55,6 @@ export default class App extends React.Component {
     const shape = [...this.state.shapeIndexes];
 
     shape.forEach((indexsArray) => {
-      console.log(indexsArray);
       table[indexsArray[0]][indexsArray[1]] = '';
     })
 
@@ -85,7 +71,6 @@ export default class App extends React.Component {
     const shape = [...this.state.shapeIndexes];
 
     shape.forEach((indexsArray) => {
-      console.log(indexsArray);
       table[indexsArray[0]][indexsArray[1]] = '';
     })
 
@@ -106,12 +91,10 @@ export default class App extends React.Component {
       shape.forEach(indexsArray => {
         table[indexsArray[0]][indexsArray[1]] = 'O';
       });
-      console.log(shape);
       return this.setState({ table, shape, isBetweenDownMovement: true, isMissingShape: true });
     }
 
     shape.forEach((indexsArray) => {
-      console.log(indexsArray);
       table[indexsArray[0]][indexsArray[1]] = '';
     })
 
@@ -130,13 +113,13 @@ export default class App extends React.Component {
     if ((shape[0][0] === (table.length) - 1) || (shape[1][0] === (table.length) - 1)
       || (shape[2][0] === (table.length) - 1) || (shape[3][0] === (table.length) - 1)) {
       shape.forEach(indexsArray => {
+        console.log("In shape loop");
         table[indexsArray[0]][indexsArray[1]] = 'O';
       });
       return this.setState({ table, shape, isBetweenDownMovement: true, isMissingShape: true });
     }
 
     shape.forEach((indexsArray) => {
-      console.log(indexsArray);
       table[indexsArray[0]][indexsArray[1]] = '';
     })
 
@@ -152,9 +135,22 @@ export default class App extends React.Component {
     this.setState({ isFirstRun: false });
   }
 
+  renderRows() {
+    return (
+      <div>
+        {this.state.table.map((row, counter) => {
+          return (<div className="row" key={counter}>{row.map((cell, index) => {
+            return (<div className="empty" key={index}>{cell}</div>)
+          })}</div>)
+        })
+        }
+      </div>
+    )
+  }
+
   render() {
     if (this.state.isMissingShape) {
-      this.generateShape();
+      // this.generateShape();
     }
     if(this.state.isFirstRun){
       this.handleFirstRun();
@@ -169,5 +165,3 @@ export default class App extends React.Component {
     }
   }
 }
-
-// export default App;
