@@ -11,25 +11,6 @@ for (let column = 0; column < numberOfColumns; column++) {
   table[column] = new Array(numberOfRows).fill("");
 }
 
-// function generateShape() {
-//   for (let i = 3; i < 7; i++) {
-//     if (state.table[i] === 'X') {
-//       console.log('You Lost')
-//       return
-//     }
-//   }
-
-//   const shape = shapes[3];
-
-//   for (let i = 3; i > 0; i--) {
-//     for (let j = 3; j > 0; j--) {
-//       if (shape[i][j] === 1) {
-
-//       }
-//     }
-//   }
-// }
-
 export default class App extends React.Component {
   constructor() {
     super();
