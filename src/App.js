@@ -10,7 +10,6 @@ export default class App extends React.Component {
 
     this.moveShapeLeft = this.moveShapeLeft.bind(this);
 
-
     this.state = {
       table: table,
       shapeIndexes: shapeCoordinates,
@@ -59,115 +58,118 @@ export default class App extends React.Component {
       this.moveShapeRight();
     } else if (key.keyCode === 40) {
       this.moveShapeDown()
+    } else if (key.keyCode == 18) {
+      console.log("test")
     }
-    return;
   }
+  return;
+}
 
-  moveShapeLeft() {
-    const table = [...this.state.table];
-    const shape = [...this.state.shapeIndexes];
+moveShapeLeft() {
+  const table = [...this.state.table];
+  const shape = [...this.state.shapeIndexes];
 
-    shape.forEach((indexsArray) => {
-      console.log(indexsArray);
-      table[indexsArray[0]][indexsArray[1]] = '';
-    })
+  shape.forEach((indexsArray) => {
+    console.log(indexsArray);
+    table[indexsArray[0]][indexsArray[1]] = '';
+  })
 
+  shape.forEach(indexsArray => {
+    indexsArray[1]--;
+    table[indexsArray[0]][indexsArray[1]] = 'X';
+  })
+
+  this.setState({ table, shape, isBetweenDownMovement: true, isMissingShape: false })
+}
+
+moveShapeRight() {
+  const table = [...this.state.table];
+  const shape = [...this.state.shapeIndexes];
+
+  shape.forEach((indexsArray) => {
+    console.log(indexsArray);
+    table[indexsArray[0]][indexsArray[1]] = '';
+  })
+
+  shape.forEach(indexsArray => {
+    indexsArray[1]++;
+    table[indexsArray[0]][indexsArray[1]] = 'X';
+  })
+
+  this.setState({ table, shape, isBetweenDownMovement: true, isMissingShape: false })
+}
+
+moveShapeDown() {
+  const table = [...this.state.table];
+  const shape = [...this.state.shapeIndexes];
+
+  if ((shape[0][0] === (table.length) - 1) || (shape[1][0] === (table.length) - 1)
+    || (shape[2][0] === (table.length) - 1) || (shape[3][0] === (table.length) - 1)) {
     shape.forEach(indexsArray => {
-      indexsArray[1]--;
-      table[indexsArray[0]][indexsArray[1]] = 'X';
-    })
-
-    this.setState({ table, shape, isBetweenDownMovement: true, isMissingShape: false })
+      table[indexsArray[0]][indexsArray[1]] = 'O';
+    });
+    console.log(shape);
+    return this.setState({ table, shape, isBetweenDownMovement: true, isMissingShape: true });
   }
 
-  moveShapeRight() {
-    const table = [...this.state.table];
-    const shape = [...this.state.shapeIndexes];
+  shape.forEach((indexsArray) => {
+    console.log(indexsArray);
+    table[indexsArray[0]][indexsArray[1]] = '';
+  })
 
-    shape.forEach((indexsArray) => {
-      console.log(indexsArray);
-      table[indexsArray[0]][indexsArray[1]] = '';
-    })
+  shape.forEach(indexsArray => {
+    indexsArray[0]++;
+    table[indexsArray[0]][indexsArray[1]] = 'X';
+  })
 
+  this.setState({ table, shape, isBetweenDownMovement: true, isMissingShape: false })
+}
+
+autoDown() {
+  const table = [...this.state.table];
+  const shape = [...this.state.shapeIndexes];
+  //break
+  if ((shape[0][0] === (table.length) - 1) || (shape[1][0] === (table.length) - 1)
+    || (shape[2][0] === (table.length) - 1) || (shape[3][0] === (table.length) - 1)) {
     shape.forEach(indexsArray => {
-      indexsArray[1]++;
-      table[indexsArray[0]][indexsArray[1]] = 'X';
-    })
-
-    this.setState({ table, shape, isBetweenDownMovement: true, isMissingShape: false })
+      table[indexsArray[0]][indexsArray[1]] = 'O';
+    });
+    return this.setState({ table, shape, isBetweenDownMovement: true, isMissingShape: true });
   }
 
-  moveShapeDown() {
-    const table = [...this.state.table];
-    const shape = [...this.state.shapeIndexes];
+  shape.forEach((indexsArray) => {
+    console.log(indexsArray);
+    table[indexsArray[0]][indexsArray[1]] = '';
+  })
 
-    if ((shape[0][0] === (table.length) - 1) || (shape[1][0] === (table.length) - 1)
-      || (shape[2][0] === (table.length) - 1) || (shape[3][0] === (table.length) - 1)) {
-      shape.forEach(indexsArray => {
-        table[indexsArray[0]][indexsArray[1]] = 'O';
-      });
-      console.log(shape);
-      return this.setState({ table, shape, isBetweenDownMovement: true, isMissingShape: true });
-    }
+  shape.forEach(indexsArray => {
+    indexsArray[0]++;
+    table[indexsArray[0]][indexsArray[1]] = 'X';
+  })
 
-    shape.forEach((indexsArray) => {
-      console.log(indexsArray);
-      table[indexsArray[0]][indexsArray[1]] = '';
-    })
+  this.setState({ table, shape, isBetweenDownMovement: false })
+}
 
-    shape.forEach(indexsArray => {
-      indexsArray[0]++;
-      table[indexsArray[0]][indexsArray[1]] = 'X';
-    })
+handleFirstRun() {
+  this.setState({ isFirstRun: false });
+}
 
-    this.setState({ table, shape, isBetweenDownMovement: true, isMissingShape: false })
+render() {
+  if (this.state.isMissingShape) {
+    this.generateShape();
   }
-
-  autoDown() {
-    const table = [...this.state.table];
-    const shape = [...this.state.shapeIndexes];
-    //break
-    if ((shape[0][0] === (table.length) - 1) || (shape[1][0] === (table.length) - 1)
-      || (shape[2][0] === (table.length) - 1) || (shape[3][0] === (table.length) - 1)) {
-      shape.forEach(indexsArray => {
-        table[indexsArray[0]][indexsArray[1]] = 'O';
-      });
-      return this.setState({ table, shape, isBetweenDownMovement: true, isMissingShape: true });
-    }
-
-    shape.forEach((indexsArray) => {
-      console.log(indexsArray);
-      table[indexsArray[0]][indexsArray[1]] = '';
-    })
-
-    shape.forEach(indexsArray => {
-      indexsArray[0]++;
-      table[indexsArray[0]][indexsArray[1]] = 'X';
-    })
-
-    this.setState({ table, shape, isBetweenDownMovement: false })
+  if (this.state.isFirstRun) {
+    this.handleFirstRun();
+    return null;
+  } else {
+    return (
+      <div className="container" tabIndex='0' onKeyDown={this.handleKeyPress.bind(this)}
+        ref={tableFocus => tableFocus && tableFocus.focus()}>
+        {this.renderRows()}
+      </div >
+    );
   }
-
-  handleFirstRun() {
-    this.setState({ isFirstRun: false });
-  }
-
-  render() {
-    if (this.state.isMissingShape) {
-      this.generateShape();
-    }
-    if(this.state.isFirstRun){
-      this.handleFirstRun();
-      return null;
-    } else {
-      return (
-        <div className="container" tabIndex='0' onKeyDown={this.handleKeyPress.bind(this)}
-          ref={tableFocus => tableFocus && tableFocus.focus()}>
-          {this.renderRows()}
-        </div >
-      );
-    }
-  }
+}
 }
 
 // export default App;
