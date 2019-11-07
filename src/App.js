@@ -1,57 +1,29 @@
 import React from 'react';
-import shapes from './Shapes';
+import { table, shapeCoordinates } from './Initialize';
+// import { arrayExpression } from '@babel/types';
 // import generate from '@babel/generator';
 // import { stat } from 'fs';
-
-const numberOfRows = 10;
-const numberOfColumns = 16;
-const table = new Array(numberOfColumns);
-
-for (let column = 0; column < numberOfColumns; column++) {
-  table[column] = new Array(numberOfRows).fill("");
-}
-
-// function generateShape() {
-//   for (let i = 3; i < 7; i++) {
-//     if (state.table[i] === 'X') {
-//       console.log('You Lost')
-//       return
-//     }
-//   }
-
-//   const shape = shapes[3];
-
-//   for (let i = 3; i > 0; i--) {
-//     for (let j = 3; j > 0; j--) {
-//       if (shape[i][j] === 1) {
-
-//       }
-//     }
-//   }
-// }
 
 export default class App extends React.Component {
   constructor() {
     super();
 
     this.moveShapeLeft = this.moveShapeLeft.bind(this);
-    
+
 
     this.state = {
       table: table,
-      shapeIndexes: [[0, 4], [0, 5], [1, 4], [1, 5]] ,
-      isMissingShape: true ,
-      isBetweenDownMovement: false
+      shapeIndexes: shapeCoordinates,
+      isMissingShape: true,
+      isBetweenDownMovement: false,
+      isFirstRun: true
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if(this.state.isBetweenDownMovement){
+    if (this.state.isBetweenDownMovement) {
       return false;
     } else {
-      if(this.state.isMissingShape) {
-        this.generateShape();
-      }
       setTimeout(() => this.autoDown(), 1000);
       return true;
     }
@@ -129,11 +101,12 @@ export default class App extends React.Component {
     const table = [...this.state.table];
     const shape = [...this.state.shapeIndexes];
 
-    if((shape[0][0] === (table.length) - 1) || (shape[1][0] === (table.length) - 1) 
-    || (shape[2][0] === (table.length) - 1) || (shape[3][0] === (table.length) - 1)) {
+    if ((shape[0][0] === (table.length) - 1) || (shape[1][0] === (table.length) - 1)
+      || (shape[2][0] === (table.length) - 1) || (shape[3][0] === (table.length) - 1)) {
       shape.forEach(indexsArray => {
         table[indexsArray[0]][indexsArray[1]] = 'O';
       });
+      console.log(shape);
       return this.setState({ table, shape, isBetweenDownMovement: true, isMissingShape: true });
     }
 
@@ -147,17 +120,15 @@ export default class App extends React.Component {
       table[indexsArray[0]][indexsArray[1]] = 'X';
     })
 
-    this.setState({ table, shape, isBetweenDownMovement: true, isMissingShape: true })
+    this.setState({ table, shape, isBetweenDownMovement: true, isMissingShape: false })
   }
 
   autoDown() {
     const table = [...this.state.table];
     const shape = [...this.state.shapeIndexes];
     //break
-    console.log('have to stop somehow...');
-    if((shape[0][0] === (table.length) - 1) || (shape[1][0] === (table.length) - 1) 
-    || (shape[2][0] === (table.length) - 1) || (shape[3][0] === (table.length) - 1)) {
-      console.log('have to stop somehow...');
+    if ((shape[0][0] === (table.length) - 1) || (shape[1][0] === (table.length) - 1)
+      || (shape[2][0] === (table.length) - 1) || (shape[3][0] === (table.length) - 1)) {
       shape.forEach(indexsArray => {
         table[indexsArray[0]][indexsArray[1]] = 'O';
       });
@@ -177,17 +148,25 @@ export default class App extends React.Component {
     this.setState({ table, shape, isBetweenDownMovement: false })
   }
 
+  handleFirstRun() {
+    this.setState({ isFirstRun: false });
+  }
+
   render() {
-    // if (this.state.isMissingShape) {
-    //   this.generateShape();
-    // }
-
-    return (
-      <div className="container" tabIndex='0' onKeyDown={this.handleKeyPress.bind(this)} ref={tableFocus => tableFocus && tableFocus.focus()}>
-        {this.renderRows()}
-      </div >
-    );
-
+    if (this.state.isMissingShape) {
+      this.generateShape();
+    }
+    if(this.state.isFirstRun){
+      this.handleFirstRun();
+      return null;
+    } else {
+      return (
+        <div className="container" tabIndex='0' onKeyDown={this.handleKeyPress.bind(this)}
+          ref={tableFocus => tableFocus && tableFocus.focus()}>
+          {this.renderRows()}
+        </div >
+      );
+    }
   }
 }
 
