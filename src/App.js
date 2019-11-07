@@ -1,6 +1,8 @@
 import React from 'react';
 import { table, shapeCoordinates } from './Initialize';
 import shapes from './Shapes';
+import { Provider } from './Provider';
+// import { Example, ExampleWithoutContext } from './Example';
 // import { arrayExpression } from '@babel/types';
 // import generate from '@babel/generator';
 // import { stat } from 'fs';
@@ -187,10 +189,14 @@ export default class App extends React.Component {
       return null;
     } else {
       return (
-        <div className="container" tabIndex='0' onKeyDown={this.handleKeyPress.bind(this)}
-          ref={tableFocus => tableFocus && tableFocus.focus()}>
-          {this.renderRows()}
-        </div >
+        <Provider value="Itamar And Tal are about to learn about React's Context.">
+          <div className="container" tabIndex='0' onKeyDown={this.handleKeyPress.bind(this)}
+            ref={tableFocus => tableFocus && tableFocus.focus()}>
+            {this.renderRows()}
+          </div >
+          {/* <Example /> */}
+          {/* <ExampleWithoutContext value="Itamar And Tal are about to learn about React's Context." /> */}
+        </Provider>
       );
     }
   }
