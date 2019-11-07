@@ -38,19 +38,6 @@ export default class App extends React.Component {
     this.setState({ table, isMissingShape: false })
   }
 
-  renderRows() {
-    return (
-      <div>
-        {this.state.table.map((row, counter) => {
-          return (<div className="row" key={counter}>{row.map((cell, index) => {
-            return (<div className="empty" key={index}>{cell}</div>)
-          })}</div>)
-        })
-        }
-      </div>
-    )
-  }
-
   handleKeyPress(key) {
     if (key.keyCode === 37) {
       this.moveShapeLeft();
@@ -58,7 +45,7 @@ export default class App extends React.Component {
       this.moveShapeRight();
     } else if (key.keyCode === 40) {
       this.moveShapeDown()
-    } else if (key.keyCode == 18) {
+    } else if (key.keyCode === 18) {
       console.log("test")
     }
     return;
@@ -69,7 +56,6 @@ export default class App extends React.Component {
     const shape = [...this.state.shapeIndexes];
 
     shape.forEach((indexsArray) => {
-      console.log(indexsArray);
       table[indexsArray[0]][indexsArray[1]] = '';
     })
 
@@ -86,7 +72,6 @@ export default class App extends React.Component {
     const shape = [...this.state.shapeIndexes];
 
     shape.forEach((indexsArray) => {
-      console.log(indexsArray);
       table[indexsArray[0]][indexsArray[1]] = '';
     })
 
