@@ -1,10 +1,13 @@
 import React from 'react';
 import { table, shapeCoordinates } from './Initialize';
+import shapes from './Shapes';
 // import { arrayExpression } from '@babel/types';
 // import generate from '@babel/generator';
 // import { stat } from 'fs';
 
 export default class App extends React.Component {
+  timerId;
+
   constructor() {
     super();
 
@@ -13,7 +16,7 @@ export default class App extends React.Component {
     this.state = {
       table: table,
       shapeIndexes: shapeCoordinates,
-      isMissingShape: true,
+      isShapeDone: true,
       isBetweenDownMovement: false,
       isFirstRun: true
     }
@@ -23,19 +26,43 @@ export default class App extends React.Component {
     if (this.state.isBetweenDownMovement) {
       return false;
     } else {
-      setTimeout(() => this.autoDown(), 1000);
+      clearTimeout(this.timerId);
+      this.timerId = setTimeout(() => this.autoDown(), 1000);
       return true;
     }
   }
 
   generateShape() {
+    const shape = shapes[Math.floor(Math.random() * 5)];
+    const shapeIndexArray = new Array(4);
+    let index = 0;
+
+    for (let i = 0; i < 4; i++) {
+      shapeIndexArray[i] = new Array(2).fill(0);
+    }
+
+    for (let i = 3; i >= 0; i--) {
+      for (let j = 0; j < 4; j++) {
+        if (shape[i][j] === 1) {
+          shapeIndexArray[index][0] = i;
+          shapeIndexArray[index][1] = j + 3;
+          index++;
+        }
+      }
+    }
+    this.drawShape(shapeIndexArray);
+
+    return;
+  }
+
+  drawShape(shapeIndexArray) {
     const table = [...this.state.table];
 
-    this.state.shapeIndexes.forEach(indexsArray => {
+    shapeIndexArray.forEach(indexsArray => {
       table[indexsArray[0]][indexsArray[1]] = 'X';
     })
 
-    this.setState({ table, isMissingShape: false })
+    this.setState({ table, shapeIndexes: shapeIndexArray, isShapeDone: false })
   }
 
   handleKeyPress(key) {
@@ -45,8 +72,6 @@ export default class App extends React.Component {
       this.moveShapeRight();
     } else if (key.keyCode === 40) {
       this.moveShapeDown()
-    } else if (key.keyCode === 18) {
-      console.log("test")
     }
     return;
   }
@@ -64,7 +89,7 @@ export default class App extends React.Component {
       table[indexsArray[0]][indexsArray[1]] = 'X';
     })
 
-    this.setState({ table, shape, isBetweenDownMovement: true, isMissingShape: false })
+    this.setState({ table, shape, isBetweenDownMovement: true, isShapeDone: false })
   }
 
   moveShapeRight() {
@@ -80,7 +105,7 @@ export default class App extends React.Component {
       table[indexsArray[0]][indexsArray[1]] = 'X';
     })
 
-    this.setState({ table, shape, isBetweenDownMovement: true, isMissingShape: false })
+    this.setState({ table, shape, isBetweenDownMovement: true, isShapeDone: false })
   }
 
   moveShapeDown() {
@@ -92,12 +117,10 @@ export default class App extends React.Component {
       shape.forEach(indexsArray => {
         table[indexsArray[0]][indexsArray[1]] = 'O';
       });
-      console.log(shape);
-      return this.setState({ table, shape, isBetweenDownMovement: true, isMissingShape: true });
+      return this.setState({ table, shape, isBetweenDownMovement: false, isShapeDone: true });
     }
 
     shape.forEach((indexsArray) => {
-      console.log(indexsArray);
       table[indexsArray[0]][indexsArray[1]] = '';
     })
 
@@ -106,7 +129,7 @@ export default class App extends React.Component {
       table[indexsArray[0]][indexsArray[1]] = 'X';
     })
 
-    this.setState({ table, shape, isBetweenDownMovement: true, isMissingShape: false })
+    this.setState({ table, shape, isBetweenDownMovement: true, isShapeDone: false })
   }
 
   autoDown() {
@@ -118,11 +141,10 @@ export default class App extends React.Component {
       shape.forEach(indexsArray => {
         table[indexsArray[0]][indexsArray[1]] = 'O';
       });
-      return this.setState({ table, shape, isBetweenDownMovement: true, isMissingShape: true });
+      return this.setState({ table, shape, isBetweenDownMovement: false, isShapeDone: true });
     }
 
     shape.forEach((indexsArray) => {
-      console.log(indexsArray);
       table[indexsArray[0]][indexsArray[1]] = '';
     })
 
@@ -157,7 +179,7 @@ export default class App extends React.Component {
   }
 
   render() {
-    if (this.state.isMissingShape) {
+    if (this.state.isShapeDone) {
       this.generateShape();
     }
     if (this.state.isFirstRun) {

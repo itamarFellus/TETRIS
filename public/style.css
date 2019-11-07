@@ -25,7 +25,9 @@ body {
      font-size: 25px;
      font-weight: bold;
      min-width: 25px;
+     max-width: 25px;
      min-height: 25px;
+     max-height: 25px;
      background-color: rgba(128, 128, 128, 0.5);
      border: 1px solid black;
      cursor: pointer;

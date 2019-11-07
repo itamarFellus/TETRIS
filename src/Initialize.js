@@ -27,6 +27,6 @@ import shapes from './Shapes';
         }
       }
     }
-
+  
     export { table, shapeCoordinates };
     
