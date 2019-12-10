@@ -31,4 +31,4 @@ const shape = [
 ]
 
 
-module.exports = shape
+module.exports = shape;
