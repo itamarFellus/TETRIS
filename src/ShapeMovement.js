@@ -4,6 +4,12 @@ export class ShapeMovement {
         const table = [...state.table]; 
         const shape = [...state.shapeIndexes]; 
 
+        // If the shape is at the most-left part of the table - don't move it farther left
+        if ((shape[0][1] === 0 || shape[1][1] === 0
+          || shape[2][1] === 0 || shape[3][1] === 0)) {
+            return;
+          }
+
         // Earse the shape from the table; [0] = row, [1] = column
         shape.forEach((indexsArray) => {
           table[indexsArray[0]][indexsArray[1]] = ''; 
@@ -22,6 +28,12 @@ export class ShapeMovement {
         const table = [...state.table];
         const shape = [...state.shapeIndexes];
     
+        // If the shape is at the most-right part of the table - don't move it farther right
+        if ((shape[0][1] === (table[0].length) - 1) || (shape[1][1] === (table[0].length) - 1)
+        || (shape[2][1] === (table[0].length) - 1) || (shape[3][1] === (table[0].length) - 1)) {
+            return;
+          }
+
         // Earse the shape from the table
         shape.forEach((indexsArray) => {
           table[indexsArray[0]][indexsArray[1]] = ''; // [0] = row, [1] = column

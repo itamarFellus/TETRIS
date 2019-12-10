@@ -18,7 +18,6 @@ export class Generator {
           }
         }
         
-    
         return this.drawShape(shapeIndexArray, state);
       }
     
