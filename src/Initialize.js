@@ -3,6 +3,7 @@ import shapes from './Shapes';
     const numberOfRows = 10;
     const numberOfColumns = 16;
     const table = new Array(numberOfColumns);
+    const noStationaryPoint = null;
     
     //initialize table
     for (let column = 0; column < numberOfColumns; column++) {
@@ -28,5 +29,5 @@ import shapes from './Shapes';
       }
     }
   
-    export { table, shapeCoordinates };
+    export { table, shapeCoordinates, noStationaryPoint };
     

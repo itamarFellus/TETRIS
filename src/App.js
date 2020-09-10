@@ -1,8 +1,8 @@
 import React from 'react';
 import { ShapeMovement } from './ShapeMovement';
-import { table, shapeCoordinates } from './Initialize';
+import { table, shapeCoordinates, noStationaryPoint } from './Initialize';
 import shapes from './Shapes';
-import { Generator } from './Generator'
+import { Generator } from './Generator';
 
 const shapeMovement = new ShapeMovement();
 const generator = new Generator();
@@ -16,6 +16,7 @@ export default class App extends React.Component {
     this.state = {
       table: table,
       shapeIndexes: shapeCoordinates,
+      shapeStationaryPoint: noStationaryPoint, 
       isShapeDone: true,
       isBetweenDownMovement: false,
       isFirstRun: true
@@ -39,6 +40,8 @@ export default class App extends React.Component {
       this.setState(shapeMovement.moveShapeRight(this.state));
     } else if (key.keyCode === 40) {
       this.setState(shapeMovement.moveShapeDown(this.state));
+    } else if (key.keyCode === 32) {
+      this.setState(shapeMovement.rotateShape(this.state));
     }
     return;
   }
@@ -55,9 +58,9 @@ export default class App extends React.Component {
       return (
         <div>
           {this.state.table.map((row, counter) => {
-            return (<div className="row" key={counter}>{row.map((cell, index) => {
-              return (<div className="empty" key={index}>{cell}</div>)
-            })}</div>)
+              return (<div className="row" key={counter}>{row.map((cell, index) => {
+                return (<div className="empty" key={index}>{cell}</div>)
+              })}</div>)
           })
           }
         </div>
