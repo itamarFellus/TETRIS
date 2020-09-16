@@ -5,8 +5,8 @@ export class ShapeMovement {
         const shape = [...state.shapeIndexes]; 
         let stationaryPoint = [...state.shapeStationaryPoint];
 
-        if(stationaryPoint[0] !== -1) {
-          stationaryPoint[1]--;
+        if(this.isLeftCellTaken(shape, table)){
+          return;
         }
 
         // If the shape is at the most-left part of the table - don't move it farther left
@@ -14,6 +14,10 @@ export class ShapeMovement {
           || shape[2][1] === 0 || shape[3][1] === 0)) {
             return;
           }
+
+        if(stationaryPoint[0] !== -1) {
+          stationaryPoint[1]--;
+        }
 
         // Earse the shape from the table; [0] = row, [1] = column
         shape.forEach((indexsArray) => {
@@ -34,15 +38,19 @@ export class ShapeMovement {
         const shape = [...state.shapeIndexes];
         let stationaryPoint = [...state.shapeStationaryPoint];
 
-        if(stationaryPoint[0] !== -1) {
-          stationaryPoint[1]++;
+        if(this.isRightCellTaken(shape, table)) {
+          return;
         }
 
         // If the shape is at the most-right part of the table - don't move it farther right
         if ((shape[0][1] === (table[0].length) - 1) || (shape[1][1] === (table[0].length) - 1)
         || (shape[2][1] === (table[0].length) - 1) || (shape[3][1] === (table[0].length) - 1)) {
-            return;
-          }
+          return;
+        }
+        
+        if(stationaryPoint[0] !== -1) {
+          stationaryPoint[1]++;
+        }
 
         // Earse the shape from the table
         shape.forEach((indexsArray) => {
@@ -66,6 +74,13 @@ export class ShapeMovement {
         if(stationaryPoint[0] !== -1) {
           stationaryPoint[0]++;
         }
+
+        if(this.isNextCellTaken(shape, table)) {
+          shape.forEach(indexsArray => {
+            table[indexsArray[0]][indexsArray[1]] = 'O';
+          });
+          return ({ table, shape, isBetweenDownMovement: false, isShapeDone: true });
+        } 
 
         // If the shape is at the bottom of the table, set it to 'O' and render next life cycle
         if ((shape[0][0] === (table.length) - 1) || (shape[1][0] === (table.length) - 1)
@@ -98,6 +113,13 @@ export class ShapeMovement {
         if(stationaryPoint[0] !== -1) {
           stationaryPoint[0]++;
         }
+
+        if(this.isNextCellTaken(shape, table)) {
+          shape.forEach(indexsArray => {
+            table[indexsArray[0]][indexsArray[1]] = 'O';
+          });
+          return ({ table, shape, isBetweenDownMovement: false, isShapeDone: true });
+        } 
         
         // Clear shape from table
         shape.forEach((indexsArray) => {
@@ -115,20 +137,22 @@ export class ShapeMovement {
           return ({ table, shape, isBetweenDownMovement: false, isShapeDone: true });
         }
     
+        
         // Clear shape from table
         shape.forEach((indexsArray) => {
           table[indexsArray[0]][indexsArray[1]] = '';
         })
-    
+        
         // Move the shape 1 row down and repaint it
         shape.forEach(indexsArray => {
           indexsArray[0]++;
           table[indexsArray[0]][indexsArray[1]] = 'X';
         })
-    
+
         return ({ table, shape, isBetweenDownMovement: false , shapeStationaryPoint: stationaryPoint });
       }
 
+      /* Correct Rotate Function for taken Cells */
 
       rotateShape(state) {
         const table = [...state.table];
@@ -136,11 +160,6 @@ export class ShapeMovement {
         let stationaryPoint = [...state.shapeStationaryPoint];
         let diffX = 0;
         let diffY = 0;
-        let outOfBoundsXLeft = 0;
-        let outOfBoundsXRight = state.table.length;
-        let outOfBoundsYLeft = 0;
-        let outOfBoundsYRight = state.table.length;
-
 
         // If this shape is symetrical - return
         if(stationaryPoint[0] === -1) {
@@ -156,7 +175,7 @@ export class ShapeMovement {
           diffX = stationaryPoint[0] - shapeCell[0]; // Save distance on X-Axis
           diffY = stationaryPoint[1] - shapeCell[1]; // Save distance on Y-Axis
 
-          if(diffX !== 0 || diffY !== 0) { // Not the stationary point
+          if(diffX !== 0 || diffY !== 0) { // Not the stationary point - rotate the cell!
             /* Normalize so that the stationary point is the (0,0) (imagine a calculus-like graph) */
             shapeCell[0] = shapeCell[0] - stationaryPoint[0];
             shapeCell[1] = shapeCell[1] - stationaryPoint[1];
@@ -166,76 +185,95 @@ export class ShapeMovement {
 
             shapeCell[0] = shapeCell[0] + stationaryPoint[0];
             shapeCell[1] = shapeCell[1] + stationaryPoint[1];
-
-            if(shapeCell[0] < 0) { // Shape is over-left
-              if(outOfBoundsXLeft > shapeCell[0]) {
-                outOfBoundsXLeft = shapeCell[0];
-              }
-            } else if (shapeCell[0] > table.length) { // Shape is over-right
-              if(outOfBoundsXRight < shapeCell[0]) {
-                outOfBoundsXRight = shapeCell[0];
-              }
-            }
-
-            if (shapeCell[1] > table.length) { // Shape is over-right
-              if(outOfBoundsYRight < shapeCell[1]) {
-                outOfBoundsYRight = shapeCell[1];
-              }
-            }
           }
         });
-    
-/************************* Unintentially changing stationary point *************************/
 
-        while(outOfBoundsXLeft < 0) {
-          shape.forEach(shapeCell => {
-            shapeCell[0]++;
-          });
-          outOfBoundsXLeft++;
-        }
-
-        while(outOfBoundsXRight > table.length) {
-          shape.forEach(shapeCell => {
-            shapeCell[0]--;
-          });
-          outOfBoundsXRight--;
-        }
-
-        while(outOfBoundsYLeft < 0) {
-          shape.forEach(shapeCell => {
-            shapeCell[1]++;
-          });
-          outOfBoundsYLeft++;
-        }
-
-        while(outOfBoundsYRight > table.length) {
-          shape.forEach(shapeCell => {
-            shapeCell[1]--;
-          });
-          outOfBoundsYRight--;
-        }
+        this.pushBackToBoundaries(shape, stationaryPoint, table);
 
         // Paint rotated shape
         shape.forEach(indexsArray => {
           table[indexsArray[0]][indexsArray[1]] = 'X';
-        })
+        });
 
-        return ({ table: table, shape: shape });
+        return ({ table: table, shape: shape, shapeStationaryPoint: stationaryPoint });
       }
 
-      isOnSameAxis(diffX, diffY) {
-        if(diffX === 0 || diffY === 0) {
-          return true;
-        } else {
-          return false;
+      pushBackToBoundaries(shape, stationaryPoint, table) {
+        let maxOutOfBoundsLeft = 0;
+        let maxOutOfBoundsRight = 0;
+        let maxOutOfBoundsTop = 0;
+        let maxOutOfBoundsBottom = 0;
+
+        // X axis is coordinate [1], Y is [0]
+        /* Save the maximum out-of-bounds distance */
+        shape.forEach(shapeCell => {
+          if(shapeCell[1] < 0) {
+            if(maxOutOfBoundsLeft > shapeCell[1]) maxOutOfBoundsLeft = Math.abs(shapeCell[1]);
+          } else if (shapeCell[1] >= table[0].length) {
+            if(maxOutOfBoundsRight < shapeCell[1] + 1) maxOutOfBoundsRight = shapeCell[1] + 1;
+          }
+          if(shapeCell[0] >= table.length) {
+            if(maxOutOfBoundsBottom < shapeCell[0] + 1) maxOutOfBoundsBottom = shapeCell[0] + 1;
+          } else if(shapeCell[0] < 0) {
+            if(maxOutOfBoundsTop > shapeCell[0]) maxOutOfBoundsTop = Math.abs(shapeCell[0]);
+          }
+        });
+
+        /* Push the shape back to the table */
+        if(maxOutOfBoundsLeft > 0) {
+          shape.forEach(shapeCell => {
+            shapeCell[1] = shapeCell[1] + maxOutOfBoundsLeft;
+          });
+          stationaryPoint[1] = stationaryPoint[1] + maxOutOfBoundsLeft;
+        } else if(maxOutOfBoundsRight > 0) {
+          shape.forEach(shapeCell => {
+            shapeCell[1] = shapeCell[1] - maxOutOfBoundsRight + table[0].length;
+          });
+          stationaryPoint[1] = stationaryPoint[1] - maxOutOfBoundsRight + table[0].length;
         }
+        if(maxOutOfBoundsBottom > 0) {
+          shape.forEach(shapeCell => {
+            shapeCell[0] = shapeCell[0] - maxOutOfBoundsBottom + table.length;
+          });
+          stationaryPoint[0] = stationaryPoint[0] - maxOutOfBoundsBottom + table.length;
+        } else if (maxOutOfBoundsTop > 0) {
+          shape.forEach(shapeCell => {
+            shapeCell[0] = shapeCell[0] + maxOutOfBoundsTop;
+          });
+          stationaryPoint[0] = stationaryPoint[0] + maxOutOfBoundsTop;
+        }
+
+        return;
       }
 
-      isOnYAxis(diffX) {
-        if(diffX === 0) {
-          return true;
-        } else {
-          return false;
+      isOutOfBoundsY(shape, table) {
+        for(let i = 0; i < shape.length; i++) {
+          if(shape[i][0] < 0 || shape[i][0] >= table.length) return 1;
         }
+        return 0;
+      }
+
+      isNextCellTaken(shape, table) {
+        for(let i = 0; i < shape.length; i++) {
+          if(shape[i][0] === table.length - 1) return 0;
+          if(table[shape[i][0] + 1][shape[i][1]] === 'O') return 1; 
+        }
+        return 0;
+      }
+
+      isLeftCellTaken(shape,table) {
+        for(let i = 0; i < shape[0].length; i++) {
+          if(shape[i][1] === table[0].length - 1) return 0;
+          if(table[shape[i][0]][shape[i][1] - 1] === 'O') return 1;
+        }
+        return 0;
+      }
+
+      isRightCellTaken(shape, table) {
+        for(let i = 0; i < shape[0].length; i++) {
+          if(shape[i][1] === 0) return 0;
+          if(table[shape[i][0]][shape[i][1] + 1] === 'O') return 1;
+        }
+        return 0;
       }
 }

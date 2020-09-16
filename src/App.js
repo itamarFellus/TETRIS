@@ -23,6 +23,7 @@ export default class App extends React.Component {
     }
   }
 
+/* Move the shape down every second */
   componentDidUpdate(prevProps, prevState) {
     if (this.state.isBetweenDownMovement) {
       return false;
@@ -33,6 +34,7 @@ export default class App extends React.Component {
     }
   }
 
+  /* Catch keybord events */
   handleKeyPress(key) {
     if (key.keyCode === 37) {
       this.setState(shapeMovement.moveShapeLeft(this.state));
