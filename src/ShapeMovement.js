@@ -170,7 +170,25 @@ export class ShapeMovement {
         shape.forEach((indexsArray) => {
           table[indexsArray[0]][indexsArray[1]] = '';
         })
-        
+
+        this.rotate(shape, stationaryPoint, diffX, diffY);
+
+        /* while rotating will result on collusion with another taken cell - rotate again */
+        while(this.isOnTakenCell(shape, table)) {
+          this.rotate(shape, stationaryPoint, diffX, diffY);
+        } 
+
+        this.pushBackToBoundaries(shape, stationaryPoint, table);
+
+        // Paint rotated shape
+        shape.forEach(indexsArray => {
+          table[indexsArray[0]][indexsArray[1]] = 'X';
+        });
+
+        return ({ table: table, shape: shape, shapeStationaryPoint: stationaryPoint });
+      }
+
+      rotate(shape, stationaryPoint, diffX, diffY) {
         shape.forEach(shapeCell => { 
           diffX = stationaryPoint[0] - shapeCell[0]; // Save distance on X-Axis
           diffY = stationaryPoint[1] - shapeCell[1]; // Save distance on Y-Axis
@@ -187,15 +205,6 @@ export class ShapeMovement {
             shapeCell[1] = shapeCell[1] + stationaryPoint[1];
           }
         });
-
-        this.pushBackToBoundaries(shape, stationaryPoint, table);
-
-        // Paint rotated shape
-        shape.forEach(indexsArray => {
-          table[indexsArray[0]][indexsArray[1]] = 'X';
-        });
-
-        return ({ table: table, shape: shape, shapeStationaryPoint: stationaryPoint });
       }
 
       pushBackToBoundaries(shape, stationaryPoint, table) {
@@ -262,7 +271,7 @@ export class ShapeMovement {
       }
 
       isLeftCellTaken(shape,table) {
-        for(let i = 0; i < shape[0].length; i++) {
+        for(let i = 0; i < shape.length; i++) {
           if(shape[i][1] === table[0].length - 1) return 0;
           if(table[shape[i][0]][shape[i][1] - 1] === 'O') return 1;
         }
@@ -270,10 +279,20 @@ export class ShapeMovement {
       }
 
       isRightCellTaken(shape, table) {
-        for(let i = 0; i < shape[0].length; i++) {
+        for(let i = 0; i < shape.length; i++) {
           if(shape[i][1] === 0) return 0;
           if(table[shape[i][0]][shape[i][1] + 1] === 'O') return 1;
         }
+        return 0;
+      }
+
+      isOnTakenCell(shape, table) {
+        for(let i = 0; i < shape.length; i++) {
+          if(table[shape[i][0]][shape[i][1]] === 'O') {
+            return 1;
+          } 
+        }
+
         return 0;
       }
 }
