@@ -1,3 +1,6 @@
+import { TableFunctions } from './TableFunctions';
+const tableFunctions = new TableFunctions();
+
 export class ShapeMovement {
 
     moveShapeLeft(state) {
@@ -79,16 +82,16 @@ export class ShapeMovement {
           shape.forEach(indexsArray => {
             table[indexsArray[0]][indexsArray[1]] = 'O';
           });
-          return ({ table, shape, isBetweenDownMovement: false, isShapeDone: true });
+          return tableFunctions.checkRows(table, shape, stationaryPoint);
         } 
 
         // If the shape is at the bottom of the table, set it to 'O' and render next life cycle
-        if ((shape[0][0] === (table.length) - 1) || (shape[1][0] === (table.length) - 1)
-          || (shape[2][0] === (table.length) - 1) || (shape[3][0] === (table.length) - 1)) {
+        if (this.isLastRow(shape, table)) {
           shape.forEach(indexsArray => {
             table[indexsArray[0]][indexsArray[1]] = 'O';
           });
-          return ({ table, shape, isBetweenDownMovement: false, isShapeDone: true, shapeStationaryPoint: stationaryPoint });
+
+          return tableFunctions.checkRows(table, shape, stationaryPoint);
         }
     
         // Clear shape from table
@@ -118,7 +121,7 @@ export class ShapeMovement {
           shape.forEach(indexsArray => {
             table[indexsArray[0]][indexsArray[1]] = 'O';
           });
-          return ({ table, shape, isBetweenDownMovement: false, isShapeDone: true });
+          return tableFunctions.checkRows(table, shape, stationaryPoint);
         } 
         
         // Clear shape from table
@@ -127,14 +130,12 @@ export class ShapeMovement {
         })
         
         // If the shape is at the bottom of the table, set it to 'O' and render next shape
-        if ((shape[0][0] === (table.length) - 1) || (shape[1][0] === (table.length) - 1)
-          || (shape[2][0] === (table.length) - 1) || (shape[3][0] === (table.length) - 1)) {
-
+        if (this.isLastRow(shape, table)) {
           shape.forEach(indexsArray => {
             table[indexsArray[0]][indexsArray[1]] = 'O';
           });
 
-          return ({ table, shape, isBetweenDownMovement: false, isShapeDone: true });
+          return tableFunctions.checkRows(table, shape, stationaryPoint);
         }
     
         
@@ -260,6 +261,12 @@ export class ShapeMovement {
           if(shape[i][0] < 0 || shape[i][0] >= table.length) return 1;
         }
         return 0;
+      }
+
+      isLastRow(shape, table){
+        if ((shape[0][0] === (table.length) - 1) || (shape[1][0] === (table.length) - 1)
+          || (shape[2][0] === (table.length) - 1) || (shape[3][0] === (table.length) - 1)) return 1;
+          return 0;
       }
 
       isNextCellTaken(shape, table) {
