@@ -1,5 +1,7 @@
 import { TableFunctions } from './TableFunctions';
+import { CellsValidation } from './CellsValidation';
 const tableFunctions = new TableFunctions();
+const cellsValidation = new CellsValidation();
 
 export class ShapeMovement {
 
@@ -8,7 +10,7 @@ export class ShapeMovement {
         const shape = [...state.shapeIndexes]; 
         let stationaryPoint = [...state.shapeStationaryPoint];
 
-        if(this.isLeftCellTaken(shape, table)){
+        if(cellsValidation.isLeftCellTaken(shape, table)){
           return;
         }
 
@@ -41,7 +43,7 @@ export class ShapeMovement {
         const shape = [...state.shapeIndexes];
         let stationaryPoint = [...state.shapeStationaryPoint];
 
-        if(this.isRightCellTaken(shape, table)) {
+        if(cellsValidation.isRightCellTaken(shape, table)) {
           return;
         }
 
@@ -78,7 +80,7 @@ export class ShapeMovement {
           stationaryPoint[0]++;
         }
 
-        if(this.isNextCellTaken(shape, table)) {
+        if(cellsValidation.isNextCellTaken(shape, table)) {
           shape.forEach(indexsArray => {
             table[indexsArray[0]][indexsArray[1]] = 'O';
           });
@@ -86,7 +88,7 @@ export class ShapeMovement {
         } 
 
         // If the shape is at the bottom of the table, set it to 'O' and render next life cycle
-        if (this.isLastRow(shape, table)) {
+        if (cellsValidation.isLastRow(shape, table)) {
           shape.forEach(indexsArray => {
             table[indexsArray[0]][indexsArray[1]] = 'O';
           });
@@ -117,7 +119,7 @@ export class ShapeMovement {
           stationaryPoint[0]++;
         }
 
-        if(this.isNextCellTaken(shape, table)) {
+        if(cellsValidation.isNextCellTaken(shape, table)) {
           shape.forEach(indexsArray => {
             table[indexsArray[0]][indexsArray[1]] = 'O';
           });
@@ -130,7 +132,7 @@ export class ShapeMovement {
         })
         
         // If the shape is at the bottom of the table, set it to 'O' and render next shape
-        if (this.isLastRow(shape, table)) {
+        if (cellsValidation.isLastRow(shape, table)) {
           shape.forEach(indexsArray => {
             table[indexsArray[0]][indexsArray[1]] = 'O';
           });
@@ -153,8 +155,6 @@ export class ShapeMovement {
         return ({ table, shape, isBetweenDownMovement: false , shapeStationaryPoint: stationaryPoint });
       }
 
-      /* Correct Rotate Function for taken Cells */
-
       rotateShape(state) {
         const table = [...state.table];
         const shape = [...state.shapeIndexes];
@@ -175,7 +175,7 @@ export class ShapeMovement {
         this.rotate(shape, stationaryPoint, diffX, diffY);
 
         /* while rotating will result on collusion with another taken cell - rotate again */
-        while(this.isOnTakenCell(shape, table)) {
+        while(cellsValidation.isOnTakenCell(shape, table)) {
           this.rotate(shape, stationaryPoint, diffX, diffY);
         } 
 
@@ -254,52 +254,5 @@ export class ShapeMovement {
         }
 
         return;
-      }
-
-      isOutOfBoundsY(shape, table) {
-        for(let i = 0; i < shape.length; i++) {
-          if(shape[i][0] < 0 || shape[i][0] >= table.length) return 1;
-        }
-        return 0;
-      }
-
-      isLastRow(shape, table){
-        if ((shape[0][0] === (table.length) - 1) || (shape[1][0] === (table.length) - 1)
-          || (shape[2][0] === (table.length) - 1) || (shape[3][0] === (table.length) - 1)) return 1;
-          return 0;
-      }
-
-      isNextCellTaken(shape, table) {
-        for(let i = 0; i < shape.length; i++) {
-          if(shape[i][0] === table.length - 1) return 0;
-          if(table[shape[i][0] + 1][shape[i][1]] === 'O') return 1; 
-        }
-        return 0;
-      }
-
-      isLeftCellTaken(shape,table) {
-        for(let i = 0; i < shape.length; i++) {
-          if(shape[i][1] === table[0].length - 1) return 0;
-          if(table[shape[i][0]][shape[i][1] - 1] === 'O') return 1;
-        }
-        return 0;
-      }
-
-      isRightCellTaken(shape, table) {
-        for(let i = 0; i < shape.length; i++) {
-          if(shape[i][1] === 0) return 0;
-          if(table[shape[i][0]][shape[i][1] + 1] === 'O') return 1;
-        }
-        return 0;
-      }
-
-      isOnTakenCell(shape, table) {
-        for(let i = 0; i < shape.length; i++) {
-          if(table[shape[i][0]][shape[i][1]] === 'O') {
-            return 1;
-          } 
-        }
-
-        return 0;
       }
 }
