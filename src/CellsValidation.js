@@ -1,5 +1,12 @@
 export class CellsValidation {
-    
+
+    isOutOfBoundsX(shape, table) {
+        for(let i = 0; i < shape.length; i++) {
+            if(shape[i][1] < 0 || shape[i][1] >= table[0].length) return 1;
+          }
+          return 0;
+    }
+
     isOutOfBoundsY(shape, table) {
         for(let i = 0; i < shape.length; i++) {
           if(shape[i][0] < 0 || shape[i][0] >= table.length) return 1;
@@ -39,11 +46,16 @@ export class CellsValidation {
 
       isOnTakenCell(shape, table) {
         for(let i = 0; i < shape.length; i++) {
-          if(table[shape[i][0]][shape[i][1]] === 'O') {
-            return 1;
-          } 
-        }
-
+            if(table[shape[i][0]][shape[i][1]] === 'O') {
+              return 1;
+            } 
+          }
         return 0;
       }
+      
+      isOnInvalidCell(shape, table) {
+        if(this.isOutOfBoundsX(shape, table) || this.isOutOfBoundsY(shape, table) || this.isOnTakenCell(shape, table)) return 1;
+        return 0;
+      }
+
 }

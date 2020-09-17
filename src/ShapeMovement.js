@@ -175,7 +175,7 @@ export class ShapeMovement {
         this.rotate(shape, stationaryPoint, diffX, diffY);
 
         /* while rotating will result on collusion with another taken cell - rotate again */
-        while(cellsValidation.isOnTakenCell(shape, table)) {
+        while(cellsValidation.isOnInvalidCell(shape, table)) {
           this.rotate(shape, stationaryPoint, diffX, diffY);
         } 
 
@@ -214,7 +214,6 @@ export class ShapeMovement {
         let maxOutOfBoundsTop = 0;
         let maxOutOfBoundsBottom = 0;
 
-        // X axis is coordinate [1], Y is [0]
         /* Save the maximum out-of-bounds distance */
         shape.forEach(shapeCell => {
           if(shapeCell[1] < 0) {
