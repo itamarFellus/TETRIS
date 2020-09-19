@@ -1,11 +1,19 @@
 import React from 'react';
+import GameOver from './GameOver';
 import { ShapeMovement } from './ShapeMovement';
 import { table, shapeCoordinates, noStationaryPoint } from './Initialize';
 import shapes from './Shapes';
 import { Generator } from './Generator';
+import { CellsValidation } from './CellsValidation';
+
+const leftArrow = 37;
+const rightArrow = 39;
+const downArrow = 40;
+const spacebar = 32;
 
 const shapeMovement = new ShapeMovement();
 const generator = new Generator();
+const cellsValidation = new CellsValidation();
 
 export default class App extends React.Component {
   timerId;
@@ -19,7 +27,8 @@ export default class App extends React.Component {
       shapeStationaryPoint: noStationaryPoint, 
       isShapeDone: true,
       isBetweenDownMovement: false,
-      isFirstRun: true
+      isFirstRun: true,
+      isGameOver: false
     }
   }
 
@@ -36,13 +45,13 @@ export default class App extends React.Component {
 
   /* Catch keybord events */
   handleKeyPress(key) {
-    if (key.keyCode === 37) {
+    if (key.keyCode === leftArrow) {
       this.setState(shapeMovement.moveShapeLeft(this.state));
-    } else if (key.keyCode === 39) {
+    } else if (key.keyCode === rightArrow) {
       this.setState(shapeMovement.moveShapeRight(this.state));
-    } else if (key.keyCode === 40) {
+    } else if (key.keyCode === downArrow) {
       this.setState(shapeMovement.moveShapeDown(this.state));
-    } else if (key.keyCode === 32) {
+    } else if (key.keyCode === spacebar) {
       this.setState(shapeMovement.rotateShape(this.state));
     }
     return;
@@ -72,7 +81,18 @@ export default class App extends React.Component {
 
   render() {
     if (this.state.isShapeDone) {
-      this.setState(generator.generateShape(shapes, this.state));
+      const lastTable = this.state.table.map(cell => { // Make a deep copy of the table
+        return [...cell];
+      })
+      const nextState = generator.generateShape(shapes, this.state);
+      const nextShape = nextState.shapeIndexes;
+      
+      this.setState(nextState);
+      if(cellsValidation.isOnTakenCell(nextShape, lastTable)) this.setState({ isGameOver: true });
+    }
+    if(this.state.isGameOver) {
+      clearTimeout(this.timerId);
+      return (<GameOver />);
     }
     if (this.state.isFirstRun) {
       this.handleFirstRun();
