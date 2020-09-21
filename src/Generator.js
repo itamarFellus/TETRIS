@@ -1,7 +1,8 @@
 export class Generator {
 
     generateShape(shapes, state) {
-        const shape = shapes[Math.floor(Math.random() * 6)];
+        // const shape = shapes[Math.floor(Math.random() * 6)];
+        const shape = shapes[0];
         const shapeIndexArray = new Array(4);
         let stationaryPoint = [2];
         let isHaveStationaryPoint = false;

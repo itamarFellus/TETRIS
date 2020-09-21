@@ -1,5 +1,7 @@
 import React from 'react';
 import GameOver from './GameOver';
+import ScoreBoard from './ScoreBoard';
+import { Score } from './Score';
 import { ShapeMovement } from './ShapeMovement';
 import { table, shapeCoordinates, noStationaryPoint } from './Initialize';
 import shapes from './Shapes';
@@ -11,6 +13,7 @@ const rightArrow = 39;
 const downArrow = 40;
 const spacebar = 32;
 
+const score = new Score(0);
 const shapeMovement = new ShapeMovement();
 const generator = new Generator();
 const cellsValidation = new CellsValidation();
@@ -24,7 +27,9 @@ export default class App extends React.Component {
     this.state = {
       table: table,
       shapeIndexes: shapeCoordinates,
-      shapeStationaryPoint: noStationaryPoint, 
+      shapeStationaryPoint: noStationaryPoint,
+      score: score, 
+      combo: 0,
       isShapeDone: true,
       isBetweenDownMovement: false,
       isFirstRun: true,
@@ -86,23 +91,26 @@ export default class App extends React.Component {
       })
       const nextState = generator.generateShape(shapes, this.state);
       const nextShape = nextState.shapeIndexes;
-      
+
       this.setState(nextState);
       if(cellsValidation.isOnTakenCell(nextShape, lastTable)) this.setState({ isGameOver: true });
     }
     if(this.state.isGameOver) {
       clearTimeout(this.timerId);
-      return (<GameOver />);
+      return (<GameOver score={this.state.score}/>);
     }
     if (this.state.isFirstRun) {
       this.handleFirstRun();
       return null;
     } else {
       return (
-        <div className="container" tabIndex='0' onKeyDown={this.handleKeyPress.bind(this)}
-            ref={tableFocus => tableFocus && tableFocus.focus()}>
-            {this.renderRows()}
-          </div >
+        <div className='container'>
+          <div className="tableBoard" tabIndex='0' onKeyDown={this.handleKeyPress.bind(this)}
+          ref={tableFocus => tableFocus && tableFocus.focus()}>
+              {this.renderRows()}
+              <ScoreBoard score={this.state.score}/>
+            </div >
+        </div>
       );
     }
   }

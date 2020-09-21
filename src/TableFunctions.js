@@ -1,15 +1,16 @@
 export class TableFunctions{
 
-    checkRows(table, shape, stationaryPoint) {
-        let rows = this.eliminateDuplicates(this.getRowsToCheck(shape)).reverse();
-        
-        rows.forEach(row => {
-            if(this.isRowFull(row, table)) {
-                this.handleFullRow(row, table);
-            }
-        });
+    checkRows(table, shape, stationaryPoint, score) {
+        let fullRows = this.getFullRows(this.eliminateDuplicates(this.getRowsToCheck(shape)).sort(), table); // !!!
+        this.handleFullRows(fullRows, table);
 
-        return ({ table, shape, isBetweenDownMovement: false, isShapeDone: true, shapeStationaryPoint: stationaryPoint });
+        if(fullRows.length > 0){
+            score.raiseScore(fullRows.length);
+        } else { 
+            score.setCombo(0);
+        }
+
+        return ({ table, shape, isBetweenDownMovement: false, isShapeDone: true, shapeStationaryPoint: stationaryPoint, score: score });
     }
 
     getRowsToCheck(shape) {
@@ -22,6 +23,10 @@ export class TableFunctions{
         return rows;
     }
 
+    getFullRows(rows, table) {
+        return rows.filter(row => this.isRowFull(row,table) === 1);
+    }
+
     isRowFull(row, table) {
 
         for(let i = 0; i < table.length; i++) {
@@ -31,11 +36,11 @@ export class TableFunctions{
         return 1;
     }
 
-    handleFullRow(row, table) {
-        if(this.isRowFull(row, table)){
+    handleFullRows(rows, table) {
+        rows.forEach(row => {
             this.clearRow(table, row);
             this.downTable(table, row);
-        } 
+        })
     }
 
     clearRow(table, row) {

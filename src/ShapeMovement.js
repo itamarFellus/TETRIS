@@ -84,7 +84,7 @@ export class ShapeMovement {
           shape.forEach(indexsArray => {
             table[indexsArray[0]][indexsArray[1]] = 'O';
           });
-          return tableFunctions.checkRows(table, shape, stationaryPoint);
+          return tableFunctions.checkRows(table, shape, stationaryPoint, state.score);
         } 
 
         // If the shape is at the bottom of the table, set it to 'O' and render next life cycle
@@ -93,7 +93,7 @@ export class ShapeMovement {
             table[indexsArray[0]][indexsArray[1]] = 'O';
           });
 
-          return tableFunctions.checkRows(table, shape, stationaryPoint);
+          return tableFunctions.checkRows(table, shape, stationaryPoint, state.score);
         }
     
         // Clear shape from table
@@ -123,7 +123,7 @@ export class ShapeMovement {
           shape.forEach(indexsArray => {
             table[indexsArray[0]][indexsArray[1]] = 'O';
           });
-          return tableFunctions.checkRows(table, shape, stationaryPoint);
+          return tableFunctions.checkRows(table, shape, stationaryPoint, state.score);
         } 
         
         // Clear shape from table
@@ -137,7 +137,7 @@ export class ShapeMovement {
             table[indexsArray[0]][indexsArray[1]] = 'O';
           });
 
-          return tableFunctions.checkRows(table, shape, stationaryPoint);
+          return tableFunctions.checkRows(table, shape, stationaryPoint, state.score);
         }
     
         

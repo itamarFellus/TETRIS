@@ -5,10 +5,16 @@ body {
     align-items: center;
     height: 100%;
    }
-   
+
    .container {
      display: flex;
-     flex-direction: column;
+     align-items: center;
+     border: 2px solid goldenrod;
+   }
+   
+   .tableBoard {
+     display: flex;
+     flex-direction: row;
      border: 1px solid black;
      color: #000;
      text-align: center;
@@ -31,4 +37,47 @@ body {
      background-color: rgba(128, 128, 128, 0.5);
      border: 1px solid black;
      cursor: pointer;
+   }
+
+   .scoreBoard {
+     display: flex; 
+     align-items: center;
+   }
+
+   .scoreContent{
+     height: 20vh;
+     width: 20vh;
+     border: 2px solid black;
+     font-size: larger;
+   }
+
+   .score{
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     height: 10vh;
+   }
+
+   .gameOver{
+     display: flex;
+     width: 50vw;
+     height: 50vh;
+     align-items: center;
+     justify-content: center;
+     flex-direction: column;
+   }
+
+   .gameOverText{
+     display: flex;
+     font-size: 100px;
+   }
+
+   .gameOverScore{
+     display: flex;
+     font-size: 60px;
+   }
+
+   .scoreText {
+     display: flex;
+     font-size: 40px;
    }

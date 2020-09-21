@@ -9,7 +9,7 @@ import shapes from './Shapes';
     for (let column = 0; column < numberOfColumns; column++) {
       table[column] = new Array(numberOfRows).fill("");
     }
-    
+
     //initialize shapes
     const shape = shapes[Math.floor(Math.random() * 5)];
     const shapeCoordinates = new Array(4);
@@ -28,6 +28,6 @@ import shapes from './Shapes';
         }
       }
     }
-  
+
     export { table, shapeCoordinates, noStationaryPoint };
     
